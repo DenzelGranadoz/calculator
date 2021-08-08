@@ -1,6 +1,9 @@
 //global variables
+let currentOperator;
 let currentOperand = "";
 let previousOperand = "";
+let temp = "";
+let counter = 0;
 
 //selectors
 const previousItemDisplay = document.getElementById("previous-item");
@@ -24,6 +27,7 @@ function allClear() {
     previousItemDisplay.innerHTML = "";
 }
 
+//add delete from currentOperand variable as well
 function deleteBtn() {
     //checking if node is empty, return if true to avoid console error
     if(currentItemDisplay.firstChild === null) {
@@ -33,27 +37,61 @@ function deleteBtn() {
     }
 }
 
+//to-do -> efficiently append currentoperand and total into their own divs 
 function equal() {
-    console.log("This is equal");
+    temp = currentOperand;
+    let value = stringToHTML(temp);
+    previousItemDisplay.appendChild(value);
+
+    let tempInt = parseInt(temp);
+    console.log(tempInt);
+    let previousOperandInt = parseInt(previousOperand);
+    console.log(previousOperandInt);
+    //run this in a function with switch case
+    return console.log(equation(currentOperator, tempInt, previousOperandInt));
 }
 
-function numbers(e) {
+function numbers() {
     let currentNumber = this.textContent;
     let value = stringToHTML(currentNumber);
     currentItemDisplay.appendChild(value);
     currentOperand += currentNumber;
+
 }
 
 function operators() {
     currentItemDisplay.innerHTML = "";
-    let currentOperator = this.textContent;
+    currentOperator = this.textContent;
     //testing out syntax I learned from wes bos videos :D
-    previousOperand += `${currentOperand}${currentOperator}`;
-    currentOperand = "";
-    console.log(currentOperand);
+    if(counter === 0) {     
+        previousOperand += `${currentOperand}${currentOperator}`;
+    } else {
+    temp = previousOperand;
+    previousOperand = currentOperand;
+    }
+    // figure out temp value ************************ 
     let value = stringToHTML(previousOperand);
     previousItemDisplay.appendChild(value);
-    
+    previousOperand = currentOperand;
+    console.log(temp);
+    console.log(previousOperand);
+    currentOperand = "";
+    // if(counter == 1) {
+    //     equation(CurrentOperator, previousOperand, CurrentOperand);
+    // }
+    //console.log(previousOperand + " " + currentOperand);
+    counter++;
+}
+//reset counter somewhere
+function equation(operator, a, b) {
+    switch(operator) {
+        case "+":
+            return sum(a,b);
+    }
+}
+
+function sum(a, b) {
+    return a + b;
 }
 // to do on operators function
 // after appending, previousOperand should only have the total value from last equation
@@ -76,8 +114,7 @@ function toString(str) {
 
 // daily 1 hour coding :)
 /* accomplished aug 7,
-   take textcontent/innerhtml of each button when pressed in succession - basically fixed event listener
-   managed to convert string into node which fixed appending problem
+    continue working on operators function
 */
 /*  aug 8 goal
     finish working on operators function
