@@ -1,9 +1,13 @@
 //global variables
+//int variables
 let currentOperator;
+let counter = 0;
+//string variables to easily convert to node and append
 let currentOperand = "";
 let previousOperand = "";
 let temp = "";
-let counter = 0;
+let total = ""; 
+
 
 //selectors
 const previousItemDisplay = document.getElementById("previous-item");
@@ -25,6 +29,11 @@ operatorButtons.forEach((operator) => operator.addEventListener("click", operato
 function allClear() {
     currentItemDisplay.innerHTML = "";
     previousItemDisplay.innerHTML = "";
+    counter = 0;
+    currentOperand = "";
+    previousOperand = "";
+    temp = "";
+    total = ""; 
 }
 
 //add delete from currentOperand variable as well
@@ -40,15 +49,18 @@ function deleteBtn() {
 //to-do -> efficiently append currentoperand and total into their own divs 
 function equal() {
     temp = currentOperand;
-    let value = stringToHTML(temp);
+
+    let value = stringToHTML(temp+" =");
     previousItemDisplay.appendChild(value);
 
     let tempInt = parseInt(temp);
-    console.log(tempInt);
     let previousOperandInt = parseInt(previousOperand);
-    console.log(previousOperandInt);
-    //run this in a function with switch case
-    return console.log(equation(currentOperator, tempInt, previousOperandInt));
+
+    currentItemDisplay.innerHTML = "";
+
+    total += equation(currentOperator, previousOperandInt, tempInt);
+
+    currentItemDisplay.appendChild(stringToHTML(total));
 }
 
 function numbers() {
@@ -56,7 +68,6 @@ function numbers() {
     let value = stringToHTML(currentNumber);
     currentItemDisplay.appendChild(value);
     currentOperand += currentNumber;
-
 }
 
 function operators() {
@@ -64,8 +75,8 @@ function operators() {
     currentOperator = this.textContent;
     //testing out syntax I learned from wes bos videos :D
     if(counter === 0) {     
-        previousOperand += `${currentOperand}${currentOperator}`;
-    } else {
+        previousOperand += `${currentOperand} ${currentOperator} `;
+    } else { //need to clear here
     temp = previousOperand;
     previousOperand = currentOperand;
     }
@@ -86,37 +97,38 @@ function operators() {
 function equation(operator, a, b) {
     switch(operator) {
         case "+":
-            return sum(a,b);
+            return add(a,b);
+        case "-":
+            return subtract(a, b);
+        case "*":
+            return multiply(a, b);
+        case "÷":
+            return divide(a, b);
     }
 }
 
-function sum(a, b) {
+function add(a, b) {
     return a + b;
 }
-// to do on operators function
-// after appending, previousOperand should only have the total value from last equation
-// work on equal function to figure it out
-/* create function
-    global variable that holds current number string
-    takes in current string in currentItem
-    add operator symbol
-    append whole thing to previous item
-*/
+
+function subtract(a, b) {
+    return a - b;
+}
+
+function multiply(a, b) {
+    return a * b;
+}
+
+function divide(a, b) {
+    return a / b;
+}
 
 function stringToHTML(str) {
     let newNode = new DOMParser().parseFromString(str, 'text/html');
     return newNode.body.firstChild;
 }
 
-function toString(str) {
-    return str.toString();
-}
-
-// daily 1 hour coding :)
-/* accomplished aug 7,
-    continue working on operators function
-*/
-/*  aug 8 goal
-    finish working on operators function
-    start equal function
-*/
+//to do
+//figure out second round of operation
+//figure out changing of operator
+//finish delete button
