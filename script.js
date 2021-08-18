@@ -54,7 +54,6 @@ function equal() {
     currentOperand = total;
     currentItemDisplay.textContent = total;
     latestButton = this.textContent;
-
     // this checks if total is decimal then outputs it to two decimal places
     // if(total % 1 != 0) {
     //     currentItemDisplay.textContent = total.toFixed(2);
