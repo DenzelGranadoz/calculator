@@ -1,6 +1,5 @@
 //to do
 //figure out changing of operator 
-//finish delete button
 //add window listener for keyboard input
 
 //global variables
@@ -8,9 +7,8 @@ let currentOperator;
 let operatorCounter = 0;
 let currentOperand = "";
 let previousOperand = "";
-let temp = "";
 let total = ""; 
-let latestButton ="";
+let latestButton = "";
 
 //selectors
 const previousItemDisplay = document.getElementById("previous-item");
@@ -35,57 +33,47 @@ function allClear() {
     operatorCounter = 0;
     currentOperand = "";
     previousOperand = "";
-    temp = "";
     total = ""; 
+    latestButton = "";
 }
 
-//add delete from currentOperand variable as well
 function deleteBtn() {
-    //checking if node is empty, return if true to avoid console error
-    if(currentItemDisplay.firstChild === null) {
-        return;
-    } else {
-    currentItemDisplay.removeChild(currentItemDisplay.lastChild);
-    }
+    currentItemDisplay.textContent = currentItemDisplay.textContent.toString().slice(0, -1);
+    currentOperand = currentItemDisplay.textContent;
 }
 
 function equal() {
+    if(currentItemDisplay.firstChild === null) return;
     currentItemDisplay.textContent = "";
     previousItemDisplay.textContent =  `${previousOperand} ${currentOperator} ${currentOperand} ${"="}`;
 
     let currentOperandFloat = parseFloat(currentOperand);       
-    let previousOperandFloat = parseFloat(previousOperand);
-
+    let previousOperandFloat = parseFloat(previousOperand); 
     total = equation(currentOperator, previousOperandFloat, currentOperandFloat);
+
     currentOperand = total;
-    currentItemDisplay.textContent = total;
+    currentItemDisplay.textContent = total; //if total contains ".", .toFixed(2)
 }
-// && latestButton == "+" || latestButton == "-" || latestButton == "*" || latestButton == "÷"
+
 function numbers() {
     if(currentItemDisplay.textContent.includes('.') && this.textContent == '.') return;
-    // if(operatorCounter > 0) {
-    //     currentItemDisplay.textContent = "";
-    // }
-    currentItemDisplay.textContent += this.textContent;
+    latestButton += this.textContent
+    currentItemDisplay.textContent = latestButton;
     currentOperand = currentItemDisplay.textContent; 
 }
 
 function operators() {
-    if(operatorCounter === 0) {
-        currentItemDisplay.textContent = "";
-    } else {
-        //currentItemDisplay.textContent = currentOperand;
-        currentItemDisplay.textContent = "";
-        //call equal function in here
-        //if previous was operator, return, else equal function
-    }
+    // if(operatorCounter > 0) {
+    //     call equal function in here
+    //     if previous was operator, return, else equal function
+    // }
+    latestButton = "";
     currentOperator = this.textContent;
     previousItemDisplay.textContent = `${currentOperand} ${currentOperator} `;
     previousOperand = currentOperand;
     operatorCounter++;
 }
 
-//reset counter somewhere
 function equation(operator, a, b) {
     switch(operator) {
         case "+":
