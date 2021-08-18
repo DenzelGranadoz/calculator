@@ -1,3 +1,3 @@
-# Calculator
-Calculator project using Vanilla JavaScript from TOP\
-Will take a while to complete due to OJT 
+# Calculator 
+[Calculator](https://lgzel.github.io/calculator/) project using Vanilla JavaScript from TOP\
+Will fix final bug and update styles designed by my friend later on :)\
