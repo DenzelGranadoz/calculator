@@ -1,16 +1,10 @@
-//to do - finish this by aug 15 
-//figure out second round of operation
-//figure out changing of operator
-//finish delete button
-//add window listener for keyboard input
-
 //global variables
 let currentOperator;
-let counter = 0;
+let operatorCounter = 0;
 let currentOperand = "";
 let previousOperand = "";
-let temp = "";
 let total = ""; 
+let latestButton = "";
 
 //selectors
 const previousItemDisplay = document.getElementById("previous-item");
@@ -30,101 +24,96 @@ operatorButtons.forEach((operator) => operator.addEventListener("click", operato
 
 //functions
 function allClear() {
-    currentItemDisplay.innerHTML = "";
-    previousItemDisplay.innerHTML = "";
-    counter = 0;
+    currentItemDisplay.textContent = "";
+    previousItemDisplay.textContent = "";
+    operatorCounter = 0;
     currentOperand = "";
     previousOperand = "";
-    temp = "";
     total = ""; 
+    latestButton = "";
 }
 
-//add delete from currentOperand variable as well
 function deleteBtn() {
-    //checking if node is empty, return if true to avoid console error
-    if(currentItemDisplay.firstChild === null) {
+    if(latestButton == "=") {
+        previousItemDisplay.textContent = " ";
         return;
-    } else {
-    currentItemDisplay.removeChild(currentItemDisplay.lastChild);
     }
+    currentItemDisplay.textContent = currentItemDisplay.textContent.toString().slice(0, -1);
+    currentOperand = currentItemDisplay.textContent;
 }
 
-//to-do -> efficiently append currentoperand and total into their own divs 
 function equal() {
-    //if counter >  1 replace previous with total
-    temp = currentOperand;                  //1
-    let value = stringToHTML(temp+" =");    //1 =
-    previousItemDisplay.appendChild(value);
-    let tempFloat = parseFloat(temp);       //1-int
-    let previousOperandFloat = parseFloat(previousOperand); //1-int
-    total += equation(currentOperator, previousOperandFloat, tempFloat); //2-int
-    
-    currentItemDisplay.innerHTML = "";  
-    currentItemDisplay.appendChild(stringToHTML(total));  //2
+    if(currentItemDisplay.firstChild === null) return;
+    currentItemDisplay.textContent = "";
+    previousItemDisplay.textContent =  `${previousOperand} ${currentOperator} ${currentOperand} ${"="}`;
+
+    let currentOperandFloat = parseFloat(currentOperand);       
+    let previousOperandFloat = parseFloat(previousOperand); 
+    total = equation(currentOperator, previousOperandFloat, currentOperandFloat);
+
+    currentOperand = total;
+    currentItemDisplay.textContent = total;
+    latestButton = this.textContent;
+
+    // this checks if total is decimal then outputs it to two decimal places
+    // if(total % 1 != 0) {
+    //     currentItemDisplay.textContent = total.toFixed(2);
+    // }
 }
 
 function numbers() {
-    let currentNumber = this.textContent;     //1-string
-    let value = stringToHTML(currentNumber);  //1
-    currentItemDisplay.appendChild(value);    //1childnode
-    currentOperand += currentNumber;          //1 "" 1
-}   
+    if(currentItemDisplay.textContent.includes(".") && this.textContent == ".") return; //returning so user is only able to input "." once
+    if(latestButton == "=") latestButton = ""; //clearing this so it wont output "="
+    latestButton += this.textContent;
+    currentItemDisplay.textContent = latestButton;
+    currentOperand = currentItemDisplay.textContent;
+}
 
 function operators() {
-    currentItemDisplay.innerHTML = "";
-    currentOperator = this.textContent;       //+
-    //testing out syntax I learned from wes bos videos :D
-    if(counter === 0) {     
-        previousOperand += `${currentOperand} ${currentOperator} `; //1 + 
-    } else { //need to clear here
-    //temp = previousOperand;
-    previousOperand = total; //2************************ 
-    previousItemDisplay.innerHTML = "";
-    let value1 = stringToHTML(`${previousOperand} ${currentOperator}`); //2
-    previousItemDisplay.appendChild(value1);
-    return;
-    //append this together with operator but dont clear current display
-    }
-    let value = stringToHTML(previousOperand);      //1 +
-    previousItemDisplay.appendChild(value);         //1 +
-    previousOperand = currentOperand;               //1
-    console.log(temp);                              //0
-    console.log(previousOperand);                   //1
-    currentOperand = "";                            //""
-    counter++;                                      //1
+    // call equal function in here
+    // if previous was operator, return, else equal function
+    // if(operatorCounter > 0) {
+    // }
+    latestButton = "";
+    currentOperator = this.textContent;
+    previousItemDisplay.textContent = `${currentOperand} ${currentOperator} `;
+    previousOperand = currentOperand;
+    operatorCounter++;
 }
-//reset counter somewhere
+
 function equation(operator, a, b) {
     switch(operator) {
         case "+":
-            return add(a,b);
+            return a + b;
         case "-":
-            return subtract(a, b);
+            return a - b;
         case "*":
-            return multiply(a, b);
+            return a * b;
         case "÷":
-            return divide(a, b);
+            return a / b;
     }
 }
 
-function add(a, b) {
-    return a + b;
-}
-
-function subtract(a, b) {
-    return a - b;
-}
-
-function multiply(a, b) {
-    return a * b;
-}
-
-function divide(a, b) {
-    return a / b;
-}
-
-function stringToHTML(str) {
-    let newNode = new DOMParser().parseFromString(str, 'text/html');
-    return newNode.body.firstChild;
-}
-
+//keyboard event listener
+document.addEventListener('keydown', (e) => {
+	let operators = {
+		"/": 'divide',
+		"x": 'multiply',
+		"*": 'multiply',
+		"+": 'plus',
+		"-": 'minus'
+	}
+	if(!isNaN(e.key) && e.key !== " "){
+		document.getElementById(`num-${e.key}`).click();
+	} else if (["/", "x", "+", "-", "*"].includes(e.key)) {
+		document.getElementById(operators[e.key]).click();
+	} else if (e.key === "Backspace") {
+		document.getElementById("delete").click();	
+	} else if (e.key === "=" || e.key === "Enter") {
+		document.getElementById("equal").click();	
+	} else if (e.key === ".") {
+		document.getElementById("decimal").click();	
+	} else if (e.key === "Escape") {
+        document.getElementById("allClear").click();
+    }
+});
