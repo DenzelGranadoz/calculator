@@ -1,12 +1,7 @@
 //to do
-//figure out second round of operation
-//figure out changing of operator
+//figure out changing of operator 
 //finish delete button
 //add window listener for keyboard input
-
-//re write code - account for first round of clicks
-//tracing bug
-//check value if operator was for equal
 
 //global variables
 let currentOperator;
@@ -57,8 +52,10 @@ function deleteBtn() {
 function equal() {
     currentItemDisplay.textContent = "";
     previousItemDisplay.textContent =  `${previousOperand} ${currentOperator} ${currentOperand} ${"="}`;
+
     let currentOperandFloat = parseFloat(currentOperand);       
     let previousOperandFloat = parseFloat(previousOperand);
+
     total = equation(currentOperator, previousOperandFloat, currentOperandFloat);
     currentOperand = total;
     currentItemDisplay.textContent = total;
@@ -70,9 +67,7 @@ function numbers() {
     //     currentItemDisplay.textContent = "";
     // }
     currentItemDisplay.textContent += this.textContent;
-    previousOperand = currentOperand;
-    currentOperand = currentItemDisplay.textContent;
-    
+    currentOperand = currentItemDisplay.textContent; 
 }
 
 function operators() {
@@ -81,9 +76,12 @@ function operators() {
     } else {
         //currentItemDisplay.textContent = currentOperand;
         currentItemDisplay.textContent = "";
+        //call equal function in here
+        //if previous was operator, return, else equal function
     }
     currentOperator = this.textContent;
     previousItemDisplay.textContent = `${currentOperand} ${currentOperator} `;
+    previousOperand = currentOperand;
     operatorCounter++;
 }
 
